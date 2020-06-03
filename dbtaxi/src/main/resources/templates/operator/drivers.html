@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Водители</title>
+</head>
+<body>
+
+<div th:if="${drivers.size()==0}">
+    <h1>Водителей нет</h1>
+</div>
+
+<div th:unless="${drivers.size()==0}">
+
+    <h1>Список водителей</h1>
+
+    <div th:each="driver:${drivers}">
+
+        <ul>
+
+            <li>id: <span th:text="${driver.id}"></span></li>
+            <li>Фамилия: <span th:text="${driver.surname}"></span></li>
+            <li>Имя: <span th:text="${driver.name}"></span></li>
+            <li>Телефон: <span th:text="${driver.phoneNumber}"></span></li>
+            <li>Дата рождения: <span th:text="${driver.dateOfBirth}"></span></li>
+            <li>Категория автомобиля: <span th:text="${driver.category}"></span></li>
+            <li>Метрика: <span th:text="${driver.metrics}"></span></li>
+            <li>Статус: <span th:text="${driver.status}"></span></li>
+
+            <hr>
+            <br>
+        </ul>
+    </div>
+
+</div>
+
+<br>
+<br>
+<br>
+
+<a href="/operator">Главное меню</a>
+
+</body>
+</html>

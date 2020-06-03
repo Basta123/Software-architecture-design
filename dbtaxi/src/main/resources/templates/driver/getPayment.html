@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Платеж</title>
+</head>
+<body>
+
+<h1>Вы проехали <span th:text="${order.payment.mileage}"></span> км, плата за проезд <span
+        th:text="${order.payment.fare}"></span> рублей</h1>
+
+<div th:if="${order.passenger.bankcard==null}">
+    <h1>Получите оплату наличными</h1>
+</div>
+
+<div th:unless="${order.passenger.bankcard==null}">
+    <h1>Оплата произошла карточкой, на счет Вашей карточки поступило <span th:text="${order.payment.fare}"></span>
+        рублей</h1>
+</div>
+
+<br>
+<br>
+<br>
+
+<a href="/driver">Главное меню</a>
+
+</body>
+</html>

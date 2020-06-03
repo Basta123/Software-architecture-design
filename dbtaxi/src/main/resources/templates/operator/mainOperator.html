@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница оператора</title>
+</head>
+<body>
+
+
+<div sec:authorize="isAuthenticated()">
+    <h1> Добро пожаловать, оператор <span sec:authentication="name">Username</span></h1>
+</div>
+
+<a href="/operator/getRequest">Посмотреть необработанные заявки</a>
+<br>
+<br>
+<a href="/operator/findDrivers">Получить свободных водителей</a>
+<br>
+<br>
+<a href="/operator/answerDriver">Получить ответ водителя</a>
+<br>
+<br>
+<a href="/operator/showComplaintsFromPassengers">Просмотреть жалобы от пассажиров</a>
+<br>
+<br>
+<a href="/operator/showComplaintsFromDrivers">Просмотреть жалобы от водителей</a>
+<br>
+<br>
+<a href="/operator/currentOrders">Просмотреть текущие заказы</a>
+<br>
+<br>
+<a href="/operator/passengers">Просмотреть всех пассажиров</a>
+<br>
+<br>
+<a href="/operator/drivers">Просмотреть всех водителей</a>
+
+
+<br>
+<br>
+<br>
+
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Выйти">
+</form>
+
+</body>
+</html>

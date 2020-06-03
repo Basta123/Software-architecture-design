@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ответ водителя</title>
+</head>
+<body>
+
+<div th:if="${answer==null}">
+    <h2>Вы не отправляли запрос водителю</h2>
+</div>
+
+<div th:unless="${answer==null}">
+
+    <div th:if="${answer==true}">
+        <h2>Водитель с id = <span th:text="${driver.id}"></span> и username = <span th:text="${driver.username}"></span>
+            согласился. Создайте заявку</h2>
+
+        <form th:action="@{/operator/createOrder}" method="post">
+            <input type="submit" value="Создать заявку">
+        </form>
+    </div>
+
+    <div th:unless="${answer==true}">
+        <h2>Водитель с id = <span th:text="${driver.id}"></span> не согласился</h2>
+        <form th:action="@{/operator/refusePassenger}" method="post">
+            <input type="submit" value="Отправить пассажиру информацию об отсутствии водителей">
+        </form>
+    </div>
+
+</div>
+
+
+</body>
+</html>

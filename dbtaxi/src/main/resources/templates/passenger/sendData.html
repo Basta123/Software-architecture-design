@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Отправка заявки</title>
+</head>
+<body>
+
+<div th:if="${order==null}">
+
+    <h1>Заполните заявку:</h1>
+
+    <form th:action="@{/passenger/sendData}" method="post">
+
+        <h2>Адрес откуда</h2>
+        <h4>Микрорайон:</h4>
+        <input type="text" name="microdistrictFrom" required value="Дмитровский">
+
+        <h4>Улица:</h4>
+        <input type="text" name="streetFrom" required value="Пермская">
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <h2>Адрес куда</h2>
+        <h4>Микрорайон:</h4>
+        <input type="text" name="microdistrictTo" required value="Железнодорожный">
+
+        <h4>Улица:</h4>
+        <input type="text" name="streetTo" required value="Ленина">
+
+        <br>
+        <br>
+        <br>
+
+        <h4>Категория автомобиля</h4>
+
+        <select name="category">
+            <option value="economy">economy</option>
+            <option value="comfort">comfort</option>
+            <option value="business">business</option>
+        </select>
+
+        <br>
+        <br>
+
+        <input type="submit" value="Отправить данные">
+
+    </form>
+</div>
+
+<div th:unless="${order==null}">
+    <h1>Ваш заказ обрабатывается</h1>
+</div>
+
+</body>
+</html>

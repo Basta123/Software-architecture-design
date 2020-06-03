@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск водителя</title>
+</head>
+<body>
+
+<form th:action="@{/operator/freeDrivers}" method="post">
+
+    <h3>Выберите категорию автомобиля</h3>
+
+    <select name="category">
+        <option value="ECONOMY">economy</option>
+        <option value="COMFORT">comfort</option>
+        <option value="BUSINESS">business</option>
+    </select>
+
+    <br>
+    <br>
+
+    <input type="submit" value="Получить водителей">
+
+</form>
+
+
+</body>
+</html>

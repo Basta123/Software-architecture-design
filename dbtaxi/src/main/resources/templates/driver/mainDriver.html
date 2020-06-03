@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница водителя</title>
+</head>
+<body>
+
+<div sec:authorize="isAuthenticated()">
+    <h1> Добро пожаловать, водитель <span sec:authentication="name">Username</span></h1>
+</div>
+
+<a href="/driver/showOrder">Посмотреть заказы</a>
+<br>
+<br>
+<a href="/driver/startWaitTimer">Уведомить пассажира о прибытии и запустить таймер</a>
+<br>
+<br>
+<a href="/driver/finishWaitTimer">Остановить таймер</a>
+<br>
+<br>
+<a href="/driver/finishTrip">Закончить поездку и определить сумму поездки</a>
+<br>
+<br>
+<a href="/driver/sendComplaint">Отправить жалобу</a>
+<br>
+<br>
+<a href="/driver/setStatus">Установить статус</a>
+
+<br>
+<br>
+<br>
+
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Выйти">
+</form>
+
+</body>
+</html>

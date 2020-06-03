@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Установить статус</title>
+</head>
+<body>
+
+<h1>Установив статус "READY", вы сможете получать заказы</h1>
+
+<form th:action="@{/driver/setStatus}" method="post">
+
+    <select name="status">
+        <option value="READY">READY</option>
+        <option value="BUSY">BUSY</option>
+    </select>
+
+    <br>
+    <br>
+
+    <input type="submit" value="Установить статус">
+
+</form>
+
+</body>
+</html>

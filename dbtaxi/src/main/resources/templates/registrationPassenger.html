@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация пассажира</title>
+</head>
+<body>
+
+<h1>Регистрация пассажира</h1>
+
+<form th:action="@{/registrationPassenger}" method="post">
+    <p>Фамилия:</p>
+    <input type="text" name="surname" required>
+    <br>
+    <br>
+
+    <p>Имя:</p>
+    <input type="text" name="name" required>
+    <br>
+    <br>
+
+    <p>Номер телефона:</p>
+    <input type="text" name="phoneNumber" required>
+    <br>
+    <br>
+
+    <p>Дата рождения:</p>
+    <input type="date" name="dateOfBirth" required>
+    <br>
+    <br>
+
+    <p>Username:</p>
+    <input type="text" name="username" required>
+    <br>
+    <br>
+
+    <p>Password:</p>
+    <input type="password" name="password" required>
+    <br>
+    <br>
+
+    <p>Номер банковской карточки (необязательно). Формат записи: xxxx-xxxx-xxxx-xxxx</p>
+    <input type="text" name="bankcardNumber" pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}">
+
+    <br>
+    <br>
+    <hr>
+
+    <input type="submit" value="Зарегистрироваться">
+
+</form>
+
+</body>
+</html>

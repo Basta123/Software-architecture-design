@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Подходящие свободные водители</title>
+</head>
+<body>
+
+<div th:if="${drivers.size()==0}">
+    <h2>Свободных водителей данной категории нет</h2>
+    <form th:action="@{/operator/refusePassenger}" method="post">
+        <input type="submit" value="Отправить пассажиру информацию об отсутствии водителей">
+    </form>
+</div>
+
+<div th:unless="${drivers.size()==0}">
+
+    <h2>Свободные водители</h2>
+
+    <div th:each="driver:${drivers}">
+        <form th:action="@{/operator/addUnprocessedOrder}" method="post">
+
+            <input type="number" name="idDriver" th:value="${driver.id}" hidden>
+
+            <p>Водитель с id = <span th:text="${driver.id}"></span>, username = <span
+                    th:text="${driver.username}"></span> и метрикой <span th:text="${driver.metrics}"></span></p>
+
+            <input type="submit" value="Отправить запрос водителю на согласие">
+
+            <br>
+            <br>
+            <br>
+
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>

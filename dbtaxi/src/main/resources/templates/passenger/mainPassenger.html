@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница пассажира</title>
+</head>
+<body>
+
+
+<div sec:authorize="isAuthenticated()">
+    <h1> Добро пожаловать, пассажир <span sec:authentication="name">Username</span></h1>
+</div>
+
+<a href="/passenger/sendData">Заказать такси</a>
+<br>
+<br>
+<a href="/passenger/getConfirmedOrder">Состояние заявки</a>
+<br>
+<br>
+<a href="/passenger/getPayment">Получить счет</a>
+<br>
+<br>
+<a href="/passenger/sendComplaint">Отправить жалобу</a>
+
+<br>
+<br>
+<br>
+
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Выйти">
+</form>
+
+</body>
+</html>

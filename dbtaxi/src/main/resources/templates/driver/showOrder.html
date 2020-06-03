@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Входящий заказ</title>
+</head>
+<body>
+
+<div th:if="${order==null}">
+    <h1>Заказов нет</h1>
+</div>
+
+<div th:unless="${order==null}">
+
+    <div>
+        <h2>Пассажир ждет здесь:</h2>
+        <p>Микрорайон: <span th:text="${order.addressFrom.microdistrict}"></span></p>
+        <p>Улица: <span th:text="${order.addressFrom.street}"></span></p>
+
+        <br>
+
+        <h2>Хочет сюда:</h2>
+        <p>Микрорайон: <span th:text="${order.addressTo.microdistrict}"></span></p>
+        <p>Улица: <span th:text="${order.addressTo.street}"></span></p>
+
+    </div>
+
+    <br>
+    <br>
+
+    <form th:action="@{/driver/showOrder}" method="post">
+        <h3>Согласны?</h3>
+
+        <input type="radio" name="agree" value="yes" checked>Да
+        <br>
+        <input type="radio" name="agree" value="no">Нет
+
+        <br>
+        <br>
+
+        <input type="submit" value="Отправить ответ">
+
+    </form>
+
+</div>
+
+</body>
+</html>

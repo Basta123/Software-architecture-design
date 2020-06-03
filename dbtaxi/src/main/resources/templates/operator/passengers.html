@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список Пассажиров</title>
+</head>
+<body>
+
+<div th:if="${passengers.size()==0}">
+    <h1>Пассажиров нет</h1>
+</div>
+
+<div th:unless="${passengers.size()==0}">
+
+    <h1>Список пассажиров</h1>
+
+    <div th:each="passenger:${passengers}">
+
+        <ul>
+
+            <li>id: <span th:text="${passenger.id}"></span></li>
+            <li>Фамилия: <span th:text="${passenger.surname}"></span></li>
+            <li>Имя: <span th:text="${passenger.name}"></span></li>
+            <li>Телефон: <span th:text="${passenger.phoneNumber}"></span></li>
+            <li>Дата рождения: <span th:text="${passenger.dateOfBirth}"></span></li>
+
+            <hr>
+            <br>
+        </ul>
+    </div>
+
+</div>
+
+<br>
+<br>
+<br>
+
+<a href="/operator">Главное меню</a>
+
+</body>
+</html>

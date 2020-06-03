@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявки от пассажиров</title>
+</head>
+<body>
+
+<div th:if="${order==null}">
+    <h1>Заявок от пассажиров нет</h1>
+</div>
+
+<div th:unless="${order==null}">
+
+    <h2>Пассажир ждет здесь:</h2>
+    <p>Микрорайон: <span th:text="${order.addressFrom.microdistrict}"></span></p>
+    <p>Улица: <span th:text="${order.addressFrom.street}"></span></p>
+
+    <br>
+
+    <h2>Хочет сюда:</h2>
+    <p>Микрорайон: <span th:text="${order.addressTo.microdistrict}"></span></p>
+    <p>Улица: <span th:text="${order.addressTo.street}"></span></p>
+
+    <br>
+
+    <h2>Категория автомобиля:</h2>
+    <p th:text="${order.category}"></p>
+
+</div>
+
+<br>
+<br>
+<br>
+
+<a href="/operator">Главное меню</a>
+
+
+</body>
+</html>

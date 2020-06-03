@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотреть жалобы от водителей</title>
+</head>
+<body>
+
+<div th:if="${complaintsDrivers.size()==0}">
+    <h1>Нет жалоб от водителей</h1>
+</div>
+
+<div th:unless="${complaintsDrivers.size()==0}">
+
+    <h1>Необработанные жалобы от водителей. Выберите жалобу для обработки</h1>
+
+    <div th:each="complaintDrivers:${complaintsDrivers}">
+        <ul>
+
+            <li>Жалоба: "<span th:text="${complaintDrivers.cause}"></span>"</li>
+
+            <li>Водитель: id = <span th:text="${complaintDrivers.driverId.id}"></span>, фамилия = <span
+                    th:text="${complaintDrivers.driverId.surname}"></span>, имя = <span
+                    th:text="${complaintDrivers.driverId.name}"></span>,
+                телефон = <span th:text="${complaintDrivers.driverId.phoneNumber}"></span></li>
+
+            <li>Заказ с id = <span th:text="${complaintDrivers.order.id}"></span></li>
+
+            <li>Пассажир: id = <span th:text="${complaintDrivers.order.passenger.id}"></span>, фамилия = <span
+                    th:text="${complaintDrivers.order.passenger.surname}"></span>, имя = <span
+                    th:text="${complaintDrivers.order.passenger.name}"></span>,
+                телефон = <span th:text="${complaintDrivers.order.passenger.phoneNumber}"></span></li>
+
+            <li>Адрес откуда: микрорайон = <span th:text="${complaintDrivers.order.addressFrom.microdistrict}"></span>,
+                улица =
+                <span
+                        th:text="${complaintDrivers.order.addressFrom.street}"></span></li>
+            <li>Адрес куда: микрорайон = <span th:text="${complaintDrivers.order.addressTo.microdistrict}"></span>,
+                улица =
+                <span
+                        th:text="${complaintDrivers.order.addressTo.street}"></span></li>
+            <li>Дата и время: <span th:text="${complaintDrivers.order.dateTime}"></span></li>
+
+        </ul>
+
+        <form th:action="@{/operator/processedComplaint}" method="post">
+            <input type="number" name="idComplaint" th:value="${complaintDrivers.id}" hidden>
+            <h3>Свяжитесь с пассажиром и водителем и решите кого наказать</h3>
+
+            <input type="radio" name="whoPunish" value="driver" checked>Водитель
+            <br>
+            <input type="radio" name="whoPunish" value="passenger">Пассажир
+
+            <br>
+            <br>
+            <input type="submit" value="Наказать">
+        </form>
+
+        <br>
+        <br>
+        <hr>
+
+    </div>
+
+</div>
+
+<br>
+<br>
+<br>
+
+<a href="/operator">Главное меню</a>
+
+</body>
+</html>

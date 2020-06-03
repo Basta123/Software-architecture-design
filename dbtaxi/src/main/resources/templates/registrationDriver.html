@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация водителя</title>
+</head>
+<body>
+
+<h1>Регистрация водителя</h1>
+
+<form th:action="@{/registrationDriver}" method="post">
+    <p>Фамилия:</p>
+    <input type="text" name="surname" required>
+    <br>
+    <br>
+
+    <p>Имя:</p>
+    <input type="text" name="name" required>
+    <br>
+    <br>
+
+    <p>Номер телефона:</p>
+    <input type="text" name="phoneNumber" required>
+    <br>
+    <br>
+
+    <p>Дата рождения:</p>
+    <input type="date" name="dateOfBirth" required>
+    <br>
+    <br>
+
+    <p>Username:</p>
+    <input type="text" name="username" required>
+    <br>
+    <br>
+
+    <p>Password:</p>
+    <input type="password" name="password" required>
+    <br>
+    <br>
+
+    <p>Номер банковской карточки. Формат записи: xxxx-xxxx-xxxx-xxxx</p>
+    <input type="text" name="bankcardNumber" pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}" required>
+    <br>
+    <br>
+
+    <p>Категория автомобиля:</p>
+    <select name="category">
+        <option value="economy">economy</option>
+        <option value="comfort">comfort</option>
+        <option value="business">business</option>
+    </select>
+    <br>
+    <br>
+
+    <p>Статус:</p>
+    <select name="status">
+        <option value="READY">READY</option>
+        <option value="BUSY">BUSY</option>
+    </select>
+
+    <br>
+    <br>
+    <hr>
+
+    <input type="submit" value="Зарегистрироваться">
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Отправка жалобы</title>
+</head>
+<body>
+
+<div th:if="${orders.size()==0}">
+    <h1>Нет поездок для жалоб</h1>
+</div>
+
+<div th:unless="${orders.size()==0}">
+
+    <h2>Ваши последние заказы. Выберите жалобу и напишите причину недовольства водителем. Позже оператор свяжется для
+        прояснения ситуации</h2>
+
+    <div th:each="order:${orders}">
+
+        <ul>
+
+            <li>Пассажир: id = <span th:text="${order.passenger.id}"></span>, фамилия = <span
+                    th:text="${order.passenger.surname}"></span>, имя = <span th:text="${order.passenger.name}"></span>,
+                телефон = <span th:text="${order.passenger.phoneNumber}"></span></li>
+            <li>Адрес откуда: микрорайон = <span th:text="${order.addressFrom.microdistrict}"></span>, улица = <span
+                    th:text="${order.addressFrom.street}"></span></li>
+            <li>Адрес куда: микрорайон = <span th:text="${order.addressTo.microdistrict}"></span>, улица = <span
+                    th:text="${order.addressTo.street}"></span></li>
+            <li>Дата и время: <span th:text="${order.dateTime}"></span></li>
+
+        </ul>
+
+        <br>
+
+        <form th:action="@{/passenger/sendComplaint}" method="post">
+
+            <input type="number" name="idOrder" th:value="${order.id}" hidden>
+
+            <textarea name="cause" required>Неаккуратная езда</textarea>
+            <br>
+            <br>
+
+            <input type="submit" value="Отправить жалобу">
+        </form>
+
+        <br>
+        <br>
+        <hr>
+
+    </div>
+
+</div>
+
+
+</form>
+
+<br>
+<br>
+<br>
+
+<a href="/passenger">Главное меню</a>
+
+</body>
+</html>

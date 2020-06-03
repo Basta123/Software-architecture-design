@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Текущие заказы</title>
+</head>
+<body>
+
+<div th:if="${orders.size()==0}">
+    <h1>Текущих заказов нет</h1>
+</div>
+
+<div th:unless="${orders.size()==0}">
+
+    <h1>Текущие заказы</h1>
+
+    <div th:each="order:${orders}">
+
+        <ul>
+
+            <li>Заказ с id = <span th:text="${order.id}"></span></li>
+            <li>Водитель: id = <span th:text="${order.driver.id}"></span>, фамилия = <span
+                    th:text="${order.driver.surname}"></span>, имя = <span th:text="${order.driver.name}"></span>,
+                телефон = <span th:text="${order.driver.phoneNumber}"></span></li>
+            <li> Пассажир: id = <span th:text="${order.passenger.id}"></span>, фамилия = <span
+                    th:text="${order.passenger.surname}"></span>, имя = <span th:text="${order.passenger.name}"></span>,
+                телефон = <span th:text="${order.passenger.phoneNumber}"></span></li>
+            <li> Оператор: id = <span th:text="${order.operator.id}"></span>, фамилия = <span
+                    th:text="${order.operator.surname}"></span>, имя = <span th:text="${order.operator.name}"></span>,
+                телефон = <span th:text="${order.operator.phoneNumber}"></span>
+            </li>
+            <li> Адрес откуда: микрорайон = <span th:text="${order.addressFrom.microdistrict}"></span>, улица = <span
+                    th:text="${order.addressFrom.street}"></span></li>
+            <li> Адрес куда: микрорайон = <span th:text="${order.addressTo.microdistrict}"></span>, улица = <span
+                    th:text="${order.addressTo.street}"></span></li>
+
+            <hr>
+            <br>
+
+        </ul>
+    </div>
+
+</div>
+
+<br>
+<br>
+<br>
+
+<a href="/operator">Главное меню</a>
+
+</body>
+</html>
