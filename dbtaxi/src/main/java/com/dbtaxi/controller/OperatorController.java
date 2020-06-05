@@ -13,6 +13,8 @@ import com.dbtaxi.service.OrderService;
 import com.dbtaxi.service.people.DriverService;
 import com.dbtaxi.service.people.OperatorService;
 import com.dbtaxi.service.people.PassengerService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +29,8 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/operator")
+@Getter
+@Setter
 public class OperatorController {
 
     @Autowired
@@ -102,7 +106,7 @@ public class OperatorController {
         Operator operator = getCurrentOperator();
         Driver driver = commonService.getOperatorDriverMap().get(operator);
         Order order = commonService.getOperatorOrderMap().get(operator);
-        order.setOperator(getCurrentOperator());
+        order.setOperator(operator);
         order.setDriver(driver);
         orderService.saveOrder(order);
         commonService.getPassengerStringMap().put(order.getPassenger(), "Заказ оформлен. Ожидайте автомобиль.");

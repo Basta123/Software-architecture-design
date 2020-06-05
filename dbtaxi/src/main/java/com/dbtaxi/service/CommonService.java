@@ -23,7 +23,7 @@ public class CommonService {
     private Map<Driver, Boolean> driverBooleanMap = new HashMap<>();
     private Map<Passenger, String> passengerStringMap = new HashMap<>();
     private Map<Passenger, Order> passengerOrderMap = new HashMap<>();
-    private Map<Driver, Long> driverLongMap = new HashMap<>();
+    private Map<Driver, Long> driverStartTimeMap = new HashMap<>();
     private Map<Operator, Driver> operatorDriverMap = new HashMap<>();
     private Map<Operator, Order> operatorOrderMap = new HashMap<>();
 

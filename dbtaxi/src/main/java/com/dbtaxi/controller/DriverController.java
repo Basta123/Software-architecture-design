@@ -7,6 +7,8 @@ import com.dbtaxi.service.CommonService;
 import com.dbtaxi.service.ComplaintService;
 import com.dbtaxi.service.OrderService;
 import com.dbtaxi.service.people.DriverService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/driver")
+@Getter
+@Setter
 public class DriverController {
 
     @Autowired
@@ -93,6 +97,7 @@ public class DriverController {
     public String closeOrder(Model model) {
         Driver driver = getCurrentDriver();
         Order order = commonService.getDriverOrderMap().get(driver);
+        commonService.getDriverOrderMap().put(driver, null);
         driverService.finishTrip(order);
         commonService.getPassengerStringMap().put(order.getPassenger(), "Текущей заявки нет");
         model.addAttribute("order", order);

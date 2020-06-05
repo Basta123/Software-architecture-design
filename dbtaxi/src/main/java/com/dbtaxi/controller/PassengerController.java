@@ -9,6 +9,8 @@ import com.dbtaxi.service.CommonService;
 import com.dbtaxi.service.ComplaintService;
 import com.dbtaxi.service.OrderService;
 import com.dbtaxi.service.people.PassengerService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,16 +25,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/passenger")
+@Getter
+@Setter
 public class PassengerController {
 
     @Autowired
     private CommonService commonService;
-
-   /* @Autowired
-    private PassengerRepository passengerRepository;*/
-
-    @Autowired
-    private AddressRepository addressRepository;
 
     @Autowired
     private PassengerService passengerService;
@@ -67,7 +65,7 @@ public class PassengerController {
 
 
     @PostMapping("/sendData")
-    public String postPassenger(@RequestParam String microdistrictFrom, @RequestParam String streetFrom, @RequestParam String microdistrictTo, @RequestParam String streetTo, @RequestParam String category) {
+    public String sendData(@RequestParam String microdistrictFrom, @RequestParam String streetFrom, @RequestParam String microdistrictTo, @RequestParam String streetTo, @RequestParam String category) {
         Order order = new Order();
         Passenger passenger = getCurrentPassenger();
         order.setPassenger(passenger);
@@ -85,7 +83,8 @@ public class PassengerController {
     @GetMapping("/getConfirmedOrder")
     public String getConfirmedOrder(Model model) {
         Passenger passenger = getCurrentPassenger();
-        model.addAttribute("confirmedOrder", commonService.getPassengerStringMap().get(passenger));
+        String confirmedOrder = commonService.getPassengerStringMap().get(passenger);
+        model.addAttribute("confirmedOrder", confirmedOrder);
         return "passenger/getConfirmedOrder";
     }
 

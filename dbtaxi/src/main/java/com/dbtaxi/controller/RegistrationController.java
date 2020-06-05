@@ -9,6 +9,8 @@ import com.dbtaxi.model.people.Role;
 import com.dbtaxi.service.people.DriverService;
 import com.dbtaxi.service.people.PassengerService;
 import com.dbtaxi.service.people.RoleService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +23,8 @@ import java.time.LocalDate;
 import java.util.Random;
 
 @Controller
+@Getter
+@Setter
 public class RegistrationController {
 
     @Autowired

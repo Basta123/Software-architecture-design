@@ -5,7 +5,6 @@ import com.dbtaxi.model.Order;
 import com.dbtaxi.model.Payment;
 import com.dbtaxi.model.enumStatus.DriverCategory;
 import com.dbtaxi.model.enumStatus.DriverStatus;
-import com.dbtaxi.model.enumStatus.OrderStatus;
 import com.dbtaxi.model.people.Driver;
 import com.dbtaxi.model.people.Passenger;
 import com.dbtaxi.repository.BankcardRepository;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
@@ -77,16 +75,26 @@ public class DriverServiceTest {
         Order order = new Order();
         order.setDriver(driver);
         driverService.startWaitTimer(order);
-        when(commonService.getDriverLongMap()).thenReturn(new HashMap<>());
+        when(commonService.getDriverStartTimeMap()).thenReturn(new HashMap<>());
+        verify(commonService, times(1)).getDriverStartTimeMap();
     }
 
 
     @Test
     void finishWaitTimer() {
         Driver driver = new Driver();
+        Payment payment = new Payment();
         Order order = new Order();
         order.setDriver(driver);
-        doReturn(new HashMap<>()).when(commonService).getDriverLongMap();
+        order.setPayment(payment);
+
+        Map<Driver, Long> map = new HashMap<>();
+        long startTime = System.currentTimeMillis();
+        map.put(driver, startTime);
+        doReturn(map).when(commonService).getDriverStartTimeMap();
+
+        int minutes = driverService.finishWaitTimer(order);
+        assertEquals(0, minutes);
     }
 
 

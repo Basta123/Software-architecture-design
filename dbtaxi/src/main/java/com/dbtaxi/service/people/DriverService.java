@@ -54,13 +54,13 @@ public class DriverService {
     public void startWaitTimer(Order order) {
         Driver driver = order.getDriver();
         long startTime = System.currentTimeMillis();
-        commonService.getDriverLongMap().put(driver, startTime);
+        commonService.getDriverStartTimeMap().put(driver, startTime);
     }
 
     public int finishWaitTimer(Order order) {
         Driver driver = order.getDriver();
         long finishTime = System.currentTimeMillis();
-        long startTime = commonService.getDriverLongMap().get(driver);
+        long startTime = commonService.getDriverStartTimeMap().get(driver);
         int minutes = (int) ((finishTime - startTime) / 1000 / 60);
         if (minutes > 3) {
             order.getPayment().setExpiredMinutes(minutes);

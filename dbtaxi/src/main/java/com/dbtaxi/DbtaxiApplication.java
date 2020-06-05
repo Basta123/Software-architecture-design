@@ -33,7 +33,7 @@ public class DbtaxiApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        /*Role roleDriver = new Role("ROLE_DRIVER");
+        Role roleDriver = new Role("ROLE_DRIVER");
         roleRepository.save(roleDriver);
         Role roleOperator = new Role("ROLE_OPERATOR");
         roleRepository.save(roleOperator);
@@ -117,7 +117,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         passenger2.setUsername("p2");
         passenger2.setPassword("$2a$10$f5FjBoebekM9HYuFjgn5NeX9GUyd5VoD7wL5ZgJG.M6/NO6lk3bfu");
         passenger2.setRoleId(rolePassenger);
-        passengerRepository.save(passenger2);*/
+        passengerRepository.save(passenger2);
 
     }
 }
