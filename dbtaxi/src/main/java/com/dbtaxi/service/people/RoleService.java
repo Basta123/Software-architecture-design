@@ -20,4 +20,8 @@ public class RoleService {
         return role;
     }
 
+    public void save(Role role) {
+        roleRepository.save(role);
+    }
+
 }

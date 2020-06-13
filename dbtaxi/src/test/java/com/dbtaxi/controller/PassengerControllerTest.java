@@ -4,7 +4,7 @@ import com.dbtaxi.model.Order;
 import com.dbtaxi.model.enumStatus.DriverCategory;
 import com.dbtaxi.model.people.Passenger;
 import com.dbtaxi.service.AddressService;
-import com.dbtaxi.service.CommonService;
+import com.dbtaxi.service.Utils;
 import com.dbtaxi.service.ComplaintService;
 import com.dbtaxi.service.OrderService;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ public class PassengerControllerTest {
     private PassengerController passengerController;
 
     @MockBean
-    private CommonService commonService;
+    private Utils utils;
 
     @MockBean
     private ComplaintService complaintService;
@@ -46,11 +46,11 @@ public class PassengerControllerTest {
     void mainPassenger() {
         Passenger passenger = new Passenger();
         passengerController = spy(PassengerController.class);
-        passengerController.setCommonService(commonService);
+        passengerController.setUtils(utils);
         doReturn(passenger).when(passengerController).getCurrentPassenger();
 
         String name = passengerController.mainPassenger();
-        verify(commonService, times(2)).getPassengerStringMap();
+        verify(utils, times(2)).getPassengerStringMap();
         assertEquals("passenger/mainPassenger", name);
     }
 
@@ -58,12 +58,12 @@ public class PassengerControllerTest {
     void sendData() {
         Passenger passenger = new Passenger();
         passengerController = spy(PassengerController.class);
-        passengerController.setCommonService(commonService);
+        passengerController.setUtils(utils);
         doReturn(passenger).when(passengerController).getCurrentPassenger();
 
         Model model = mock(Model.class);
         String name = passengerController.sendData(model);
-        verify(commonService, times(1)).getPassengerOrderMap();
+        verify(utils, times(1)).getPassengerOrderMap();
         assertEquals("passenger/sendData", name);
     }
 
@@ -71,12 +71,12 @@ public class PassengerControllerTest {
     void sendDataRedirect() {
         Passenger passenger = new Passenger();
         passengerController = spy(PassengerController.class);
-        passengerController.setCommonService(commonService);
+        passengerController.setUtils(utils);
         passengerController.setAddressService(addressService);
         doReturn(passenger).when(passengerController).getCurrentPassenger();
 
         Queue<Order> queue = new ArrayDeque<>();
-        when(commonService.getOrdersPassengerOperator()).thenReturn(queue);
+        when(utils.getOrdersPassengerOperator()).thenReturn(queue);
 
         String microdistrictFrom = "microdistrictFrom";
         String streetFrom = "streetFrom";
@@ -87,9 +87,9 @@ public class PassengerControllerTest {
         String name = passengerController.sendData(microdistrictFrom, streetFrom, microdistrictTo, streetTo, category);
         verify(addressService, times(1)).getAddressByMicrodistrictAndStreet(microdistrictFrom, streetFrom);
         verify(addressService, times(1)).getAddressByMicrodistrictAndStreet(microdistrictTo, streetTo);
-        verify(commonService, times(1)).getOrdersPassengerOperator();
-        verify(commonService, times(1)).getPassengerStringMap();
-        verify(commonService, times(1)).getPassengerOrderMap();
+        verify(utils, times(1)).getOrdersPassengerOperator();
+        verify(utils, times(1)).getPassengerStringMap();
+        verify(utils, times(1)).getPassengerOrderMap();
         assertEquals("redirect:/passenger", name);
     }
 
@@ -97,12 +97,12 @@ public class PassengerControllerTest {
     void getConfirmedOrder() {
         Passenger passenger = new Passenger();
         passengerController = spy(PassengerController.class);
-        passengerController.setCommonService(commonService);
+        passengerController.setUtils(utils);
         doReturn(passenger).when(passengerController).getCurrentPassenger();
 
         Model model = mock(Model.class);
         String name = passengerController.getConfirmedOrder(model);
-        verify(commonService, times(1)).getPassengerStringMap();
+        verify(utils, times(1)).getPassengerStringMap();
         assertEquals("passenger/getConfirmedOrder", name);
     }
 
@@ -110,18 +110,18 @@ public class PassengerControllerTest {
     void getPayment() {
         Passenger passenger = new Passenger();
         passengerController = spy(PassengerController.class);
-        passengerController.setCommonService(commonService);
+        passengerController.setUtils(utils);
         doReturn(passenger).when(passengerController).getCurrentPassenger();
 
         Map<Passenger, Order> map = new HashMap<>();
         Order order = new Order();
         order.setPassenger(passenger);
         map.put(passenger, order);
-        when(commonService.getPassengerOrderMap()).thenReturn(map);
+        when(utils.getPassengerOrderMap()).thenReturn(map);
 
         Model model = mock(Model.class);
         String name = passengerController.getPayment(model);
-        verify(commonService, times(2)).getPassengerOrderMap();
+        verify(utils, times(2)).getPassengerOrderMap();
         assertEquals("passenger/getPayment", name);
     }
 
@@ -146,7 +146,7 @@ public class PassengerControllerTest {
         passengerController.setComplaintService(complaintService);
         doReturn(passenger).when(passengerController).getCurrentPassenger();
 
-        Integer id = 1;
+        int id = 1;
         String cause = "cause";
         Order order = new Order();
         when(orderService.getOrderById(id)).thenReturn(order);

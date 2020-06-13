@@ -6,7 +6,7 @@ import com.dbtaxi.model.enumStatus.DriverCategory;
 import com.dbtaxi.model.enumStatus.DriverStatus;
 import com.dbtaxi.model.people.Driver;
 import com.dbtaxi.model.people.Operator;
-import com.dbtaxi.service.CommonService;
+import com.dbtaxi.service.Utils;
 import com.dbtaxi.service.ComplaintService;
 import com.dbtaxi.service.OrderService;
 import com.dbtaxi.service.people.DriverService;
@@ -35,20 +35,16 @@ public class OperatorControllerTest {
     private OperatorController operatorController;
 
     @MockBean
-    private CommonService commonService;
-
+    private Utils utils;
 
     @MockBean
     private DriverService driverService;
 
-
     @MockBean
     private PassengerService passengerService;
 
-
     @MockBean
     private ComplaintService complaintService;
-
 
     @MockBean
     private OrderService orderService;
@@ -64,18 +60,18 @@ public class OperatorControllerTest {
     void getRequest() {
         Operator operator = new Operator();
         operatorController = spy(OperatorController.class);
-        operatorController.setCommonService(commonService);
+        operatorController.setUtils(utils);
         doReturn(operator).when(operatorController).getCurrentOperator();
 
         Queue<Order> queue = new ArrayDeque<>();
         Order order = new Order();
         queue.add(order);
-        when(commonService.getOrdersPassengerOperator()).thenReturn(queue);
+        when(utils.getOrdersPassengerOperator()).thenReturn(queue);
 
         Model model = mock(Model.class);
         String name = operatorController.getRequest(model);
-        verify(commonService, times(1)).getOrdersPassengerOperator();
-        verify(commonService, times(1)).getOperatorOrderMap();
+        verify(utils, times(1)).getOrdersPassengerOperator();
+        verify(utils, times(1)).getOperatorOrderMap();
 
         assertEquals("operator/getRequest", name);
     }
@@ -100,7 +96,7 @@ public class OperatorControllerTest {
         Operator operator = new Operator();
         operatorController = spy(OperatorController.class);
         operatorController.setDriverService(driverService);
-        operatorController.setCommonService(commonService);
+        operatorController.setUtils(utils);
         doReturn(operator).when(operatorController).getCurrentOperator();
 
         Integer idDriver = 1;
@@ -109,14 +105,14 @@ public class OperatorControllerTest {
 
         Map<Operator, Driver> map = new HashMap<>();
         map.put(operator, driver);
-        when(commonService.getOperatorDriverMap()).thenReturn(map);
+        when(utils.getOperatorDriverMap()).thenReturn(map);
 
         String name = operatorController.addUnprocessedOrder(idDriver);
-        verify(commonService, times(1)).getOperatorDriverMap();
-        verify(commonService, times(1)).getOperatorOrderMap();
-        verify(commonService, times(1)).getDriverOrderMap();
+        verify(utils, times(1)).getOperatorDriverMap();
+        verify(utils, times(1)).getOperatorOrderMap();
+        verify(utils, times(1)).getDriverOrderMap();
         verify(driverService, times(1)).getDriverById(idDriver);
-        verify(driverService, times(1)).saveDriver(driver);
+        verify(driverService, times(1)).save(driver);
         assertEquals(DriverStatus.BUSY.toString(), driver.getStatus());
         assertEquals("redirect:/operator", name);
     }
@@ -125,13 +121,13 @@ public class OperatorControllerTest {
     void answerDriver() {
         Operator operator = new Operator();
         operatorController = spy(OperatorController.class);
-        operatorController.setCommonService(commonService);
+        operatorController.setUtils(utils);
         doReturn(operator).when(operatorController).getCurrentOperator();
 
         Model model = mock(Model.class);
         String name = operatorController.answerDriver(model);
-        verify(commonService, times(1)).getOperatorDriverMap();
-        verify(commonService, times(1)).getDriverBooleanMap();
+        verify(utils, times(1)).getOperatorDriverMap();
+        verify(utils, times(1)).getDriverBooleanMap();
         assertEquals("operator/answerDriver", name);
     }
 
@@ -139,25 +135,25 @@ public class OperatorControllerTest {
     void createOrderRedirect() {
         Operator operator = new Operator();
         operatorController = spy(OperatorController.class);
-        operatorController.setCommonService(commonService);
+        operatorController.setUtils(utils);
         operatorController.setOrderService(orderService);
         doReturn(operator).when(operatorController).getCurrentOperator();
 
         Driver driver = new Driver();
         Map<Operator, Driver> map1 = new HashMap<>();
         map1.put(operator, driver);
-        when(commonService.getOperatorDriverMap()).thenReturn(map1);
+        when(utils.getOperatorDriverMap()).thenReturn(map1);
         map1.put(operator, driver);
 
         Order order = new Order();
         Map<Operator, Order> map2 = new HashMap<>();
         map2.put(operator, order);
-        when(commonService.getOperatorOrderMap()).thenReturn(map2);
+        when(utils.getOperatorOrderMap()).thenReturn(map2);
 
         String name = operatorController.createOrder();
-        verify(commonService, times(1)).getOperatorDriverMap();
-        verify(commonService, times(1)).getOperatorOrderMap();
-        verify(commonService, times(1)).getPassengerStringMap();
+        verify(utils, times(1)).getOperatorDriverMap();
+        verify(utils, times(1)).getOperatorOrderMap();
+        verify(utils, times(1)).getPassengerStringMap();
         verify(orderService, times(1)).saveOrder(order);
         assertEquals(operator, order.getOperator());
         assertEquals(driver, order.getDriver());
@@ -168,17 +164,17 @@ public class OperatorControllerTest {
     void refusePassengerRedirect() {
         Operator operator = new Operator();
         operatorController = spy(OperatorController.class);
-        operatorController.setCommonService(commonService);
+        operatorController.setUtils(utils);
         doReturn(operator).when(operatorController).getCurrentOperator();
 
         Order order = new Order();
         Map<Operator, Order> map = new HashMap<>();
         map.put(operator, order);
-        when(commonService.getOperatorOrderMap()).thenReturn(map);
+        when(utils.getOperatorOrderMap()).thenReturn(map);
 
         String name = operatorController.refusePassenger();
-        verify(commonService, times(1)).getOperatorOrderMap();
-        verify(commonService, times(1)).getPassengerStringMap();
+        verify(utils, times(1)).getOperatorOrderMap();
+        verify(utils, times(1)).getPassengerStringMap();
         assertEquals("redirect:/operator", name);
     }
 

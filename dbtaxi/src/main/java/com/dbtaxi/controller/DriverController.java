@@ -3,7 +3,7 @@ package com.dbtaxi.controller;
 import com.dbtaxi.model.Order;
 import com.dbtaxi.model.enumStatus.DriverStatus;
 import com.dbtaxi.model.people.Driver;
-import com.dbtaxi.service.CommonService;
+import com.dbtaxi.service.Utils;
 import com.dbtaxi.service.ComplaintService;
 import com.dbtaxi.service.OrderService;
 import com.dbtaxi.service.people.DriverService;
@@ -28,7 +28,36 @@ import java.util.List;
 public class DriverController {
 
     @Autowired
-    private CommonService commonService;
+    private Utils utils;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Autowired
     private DriverService driverService;
@@ -41,50 +70,45 @@ public class DriverController {
 
     @GetMapping("")
     public String mainDriver() {
-        Driver driver = getCurrentDriver();
-        boolean containsDriver = commonService.getDriverOrderMap().containsKey(driver);
+        boolean containsDriver = utils.getDriverOrderMap().containsKey(getCurrentDriver());
         if (!containsDriver) {
-            commonService.getDriverOrderMap().put(driver, null);
+            utils.getDriverOrderMap().put(getCurrentDriver(), null);
         }
         return "driver/mainDriver";
     }
 
     @GetMapping("/showOrder")
     public String showOrder(Model model) {
-        Driver driver = getCurrentDriver();
-        Order order = commonService.getDriverOrderMap().get(driver);
+        Order order = utils.getDriverOrderMap().get(getCurrentDriver());
         model.addAttribute("order", order);
         return "driver/showOrder";
     }
 
     @PostMapping("/showOrder")
     public String showOrder(@RequestParam String agree) {
-        Driver driver = getCurrentDriver();
         if (agree.equals("yes")) {
-            commonService.getDriverBooleanMap().put(driver, true);
+            utils.getDriverBooleanMap().put(getCurrentDriver(), true);
         } else {
-            driverService.setStatus(driver, DriverStatus.READY.toString());
-            commonService.getDriverBooleanMap().put(driver, false);
+            driverService.setStatus(getCurrentDriver(), DriverStatus.READY.toString());
+            utils.getDriverBooleanMap().put(getCurrentDriver(), false);
         }
         return "redirect:/driver";
     }
 
     @GetMapping("/startWaitTimer")
     public String startWaitTimer() {
-        Driver driver = getCurrentDriver();
-        Order order = commonService.getDriverOrderMap().get(driver);
+        Order order = utils.getDriverOrderMap().get(getCurrentDriver());
         driverService.startWaitTimer(order);
-        commonService.getPassengerStringMap().put(order.getPassenger(), "Автомобиль прибыл и ожидает вас. Время бесплатного ожидания 3 минуты.");
+        utils.getPassengerStringMap().put(order.getPassenger(), "Автомобиль прибыл и ожидает вас. Время бесплатного ожидания 3 минуты.");
         return "driver/startWaitTimer";
     }
 
     @GetMapping("/finishWaitTimer")
     public String finishWaitTimer(Model model) {
-        Driver driver = getCurrentDriver();
-        Order order = commonService.getDriverOrderMap().get(driver);
+        Order order = utils.getDriverOrderMap().get(getCurrentDriver());
         int minutes = driverService.finishWaitTimer(order);
         model.addAttribute("timer", minutes);
-        commonService.getPassengerStringMap().put(order.getPassenger(), "Поездка...");
+        utils.getPassengerStringMap().put(order.getPassenger(), "Поездка...");
         return "driver/finishWaitTimer";
     }
 
@@ -95,28 +119,25 @@ public class DriverController {
 
     @PostMapping("/finishTrip")
     public String closeOrder(Model model) {
-        Driver driver = getCurrentDriver();
-        Order order = commonService.getDriverOrderMap().get(driver);
-        commonService.getDriverOrderMap().put(driver, null);
+        Order order = utils.getDriverOrderMap().get(getCurrentDriver());
+        utils.getDriverOrderMap().put(getCurrentDriver(), null);
         driverService.finishTrip(order);
-        commonService.getPassengerStringMap().put(order.getPassenger(), "Текущей заявки нет");
+        utils.getPassengerStringMap().put(order.getPassenger(), "Текущей заявки нет");
         model.addAttribute("order", order);
         return "driver/getPayment";
     }
 
     @GetMapping("/sendComplaint")
     public String sendComplaint(Model model) {
-        Driver driver = getCurrentDriver();
-        List<Order> orders = orderService.getOrdersByDriver(driver);
+        List<Order> orders = orderService.getOrdersByDriver(getCurrentDriver());
         model.addAttribute("orders", orders);
         return "driver/sendComplaint";
     }
 
     @PostMapping("/sendComplaint")
     public String sendComplaint(@RequestParam Integer idOrder, @RequestParam String cause) {
-        Driver driver = getCurrentDriver();
         Order order = orderService.getOrderById(idOrder);
-        complaintService.createComplaint(driver, order, cause);
+        complaintService.createComplaint(getCurrentDriver(), order, cause);
         return "redirect:/driver";
     }
 
@@ -127,8 +148,7 @@ public class DriverController {
 
     @PostMapping("/setStatus")
     public String setStatus(@RequestParam String status) {
-        Driver driver = getCurrentDriver();
-        driverService.setStatus(driver, status);
+        driverService.setStatus(getCurrentDriver(), status);
         return "redirect:/driver";
     }
 
@@ -136,7 +156,7 @@ public class DriverController {
     public Driver getCurrentDriver() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        Driver driver = driverService.getDriverByUsername(currentPrincipalName);
+        Driver driver =(Driver) driverService.getUserByUsername(currentPrincipalName);
         return driver;
     }
 

@@ -1,6 +1,6 @@
 package com.dbtaxi.config;
 
-import com.dbtaxi.model.people.UserDetailsServiceImpl;
+import com.dbtaxi.service.people.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;

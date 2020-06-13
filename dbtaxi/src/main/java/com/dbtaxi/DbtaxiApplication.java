@@ -7,7 +7,10 @@ import com.dbtaxi.model.people.Driver;
 import com.dbtaxi.model.people.Operator;
 import com.dbtaxi.model.people.Passenger;
 import com.dbtaxi.model.people.Role;
-import com.dbtaxi.repository.*;
+import com.dbtaxi.service.people.DriverService;
+import com.dbtaxi.service.people.OperatorService;
+import com.dbtaxi.service.people.PassengerService;
+import com.dbtaxi.service.people.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,22 +26,22 @@ public class DbtaxiApplication implements CommandLineRunner {
     }
 
     @Autowired
-    private DriverRepository driverRepository;
+    private DriverService driverService;
     @Autowired
-    private OperatorRepository operatorRepository;
+    private OperatorService operatorService;
     @Autowired
-    private PassengerRepository passengerRepository;
+    private PassengerService passengerService;
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
 
     @Override
     public void run(String... args) throws Exception {
         Role roleDriver = new Role("ROLE_DRIVER");
-        roleRepository.save(roleDriver);
+        roleService.save(roleDriver);
         Role roleOperator = new Role("ROLE_OPERATOR");
-        roleRepository.save(roleOperator);
+        roleService.save(roleOperator);
         Role rolePassenger = new Role("ROLE_PASSENGER");
-        roleRepository.save(rolePassenger);
+        roleService.save(rolePassenger);
 
         Driver driver1=new Driver();
         driver1.setSurname("Driver1Surname");
@@ -53,7 +56,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         driver1.setCategory(DriverCategory.ECONOMY.toString());
 
         driver1.setBankcard(new Bankcard("2142-1201-2420-1247",3000));
-        driverRepository.save(driver1);
+        driverService.save(driver1);
 
 
         Driver driver2=new Driver();
@@ -69,7 +72,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         driver2.setCategory(DriverCategory.ECONOMY.toString());
 
         driver2.setBankcard(new Bankcard("2142-1201-2425-8822",5000));
-        driverRepository.save(driver2);
+        driverService.save(driver2);
 
 
 
@@ -83,7 +86,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         operator1.setUsername("o1");
         operator1.setPassword("$2a$10$BD63Pqo2aLW5kRP.K5kAfOfFMKjebv27kFIZ3R5JkZ.EHKGLF7wZm");
         operator1.setRoleId(roleOperator);
-        operatorRepository.save(operator1);
+        operatorService.save(operator1);
 
 
         Operator operator2 = new Operator();
@@ -94,7 +97,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         operator2.setUsername("o2");
         operator2.setPassword("$2a$10$i/J5ijwvy7sVEt6H7PHQjeyn3igs5UI5TzHeSaEWkwOj88BRlbg0q");
         operator2.setRoleId(roleOperator);
-        operatorRepository.save(operator2);
+        operatorService.save(operator2);
 
 
         Passenger passenger1=new Passenger();
@@ -106,7 +109,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         passenger1.setPassword("$2a$10$8SMwIL8PL2w4zuqz8phx9.rkj.AP1913AOJVgNf9zhQo1bZxVxXci");
         passenger1.setRoleId(rolePassenger);
         passenger1.setBankcard(new Bankcard("1245-5814-2012-8510",10000));
-        passengerRepository.save(passenger1);
+        passengerService.save(passenger1);
 
 
         Passenger passenger2=new Passenger();
@@ -117,7 +120,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         passenger2.setUsername("p2");
         passenger2.setPassword("$2a$10$f5FjBoebekM9HYuFjgn5NeX9GUyd5VoD7wL5ZgJG.M6/NO6lk3bfu");
         passenger2.setRoleId(rolePassenger);
-        passengerRepository.save(passenger2);
+        passengerService.save(passenger2);
 
     }
 }

@@ -4,7 +4,7 @@ import com.dbtaxi.model.Order;
 import com.dbtaxi.model.enumStatus.DriverStatus;
 import com.dbtaxi.model.people.Driver;
 import com.dbtaxi.model.people.Passenger;
-import com.dbtaxi.service.CommonService;
+import com.dbtaxi.service.Utils;
 import com.dbtaxi.service.ComplaintService;
 import com.dbtaxi.service.OrderService;
 import com.dbtaxi.service.people.DriverService;
@@ -30,7 +30,7 @@ public class DriverControllerTest {
     private DriverController driverController;
 
     @MockBean
-    private CommonService commonService;
+    private Utils utils;
 
     @MockBean
     private DriverService driverService;
@@ -45,14 +45,10 @@ public class DriverControllerTest {
     void mainDriver() {
         Driver driver = new Driver();
         driverController = spy(DriverController.class);
-        //when( driverController.getCurrentDriver()).thenReturn(driver);
-        driverController.setCommonService(commonService);
+        driverController.setUtils(utils);
         doReturn(driver).when(driverController).getCurrentDriver();
-
-        //doReturn(new HashMap<>()).when(commonService).getDriverOrderMap();
-
         String name = driverController.mainDriver();
-        verify(commonService, times(2)).getDriverOrderMap();
+        verify(utils, times(2)).getDriverOrderMap();
         assertEquals("driver/mainDriver", name);
     }
 
@@ -60,12 +56,12 @@ public class DriverControllerTest {
     void showOrder() {
         Driver driver = new Driver();
         driverController = spy(DriverController.class);
-        driverController.setCommonService(commonService);
+        driverController.setUtils(utils);
         doReturn(driver).when(driverController).getCurrentDriver();
 
         Model model = mock(Model.class);
         String name = driverController.showOrder(model);
-        verify(commonService, times(1)).getDriverOrderMap();
+        verify(utils, times(1)).getDriverOrderMap();
         assertEquals("driver/showOrder", name);
     }
 
@@ -73,11 +69,11 @@ public class DriverControllerTest {
     void showOrderRedirect() {
         Driver driver = new Driver();
         driverController = spy(DriverController.class);
-        driverController.setCommonService(commonService);
+        driverController.setUtils(utils);
         doReturn(driver).when(driverController).getCurrentDriver();
 
         String name = driverController.showOrder("yes");
-        verify(commonService, times(1)).getDriverBooleanMap();
+        verify(utils, times(1)).getDriverBooleanMap();
         assertEquals("redirect:/driver", name);
     }
 
@@ -86,7 +82,7 @@ public class DriverControllerTest {
     void startWaitTimer() {
         Driver driver = new Driver();
         driverController = spy(DriverController.class);
-        driverController.setCommonService(commonService);
+        driverController.setUtils(utils);
         driverController.setDriverService(driverService);
         doReturn(driver).when(driverController).getCurrentDriver();
 
@@ -95,12 +91,12 @@ public class DriverControllerTest {
         Passenger passenger = new Passenger();
         order.setPassenger(passenger);
         map.put(driver, order);
-        when(commonService.getDriverOrderMap()).thenReturn(map);
+        when(utils.getDriverOrderMap()).thenReturn(map);
 
         String name = driverController.startWaitTimer();
         verify(driverService, times(1)).startWaitTimer(order);
-        verify(commonService, times(1)).getDriverOrderMap();
-        verify(commonService, times(1)).getPassengerStringMap();
+        verify(utils, times(1)).getDriverOrderMap();
+        verify(utils, times(1)).getPassengerStringMap();
         assertEquals("driver/startWaitTimer", name);
     }
 
@@ -108,7 +104,7 @@ public class DriverControllerTest {
     void finishWaitTimer() {
         Driver driver = new Driver();
         driverController = spy(DriverController.class);
-        driverController.setCommonService(commonService);
+        driverController.setUtils(utils);
         driverController.setDriverService(driverService);
         doReturn(driver).when(driverController).getCurrentDriver();
 
@@ -117,13 +113,13 @@ public class DriverControllerTest {
         Passenger passenger = new Passenger();
         order.setPassenger(passenger);
         map.put(driver, order);
-        when(commonService.getDriverOrderMap()).thenReturn(map);
+        when(utils.getDriverOrderMap()).thenReturn(map);
 
         Model model = mock(Model.class);
         String name = driverController.finishWaitTimer(model);
         verify(driverService, times(1)).finishWaitTimer(order);
-        verify(commonService, times(1)).getDriverOrderMap();
-        verify(commonService, times(1)).getPassengerStringMap();
+        verify(utils, times(1)).getDriverOrderMap();
+        verify(utils, times(1)).getPassengerStringMap();
         assertEquals("driver/finishWaitTimer", name);
     }
 
@@ -137,7 +133,7 @@ public class DriverControllerTest {
     void closeOrder() {
         Driver driver = new Driver();
         driverController = spy(DriverController.class);
-        driverController.setCommonService(commonService);
+        driverController.setUtils(utils);
         driverController.setDriverService(driverService);
         doReturn(driver).when(driverController).getCurrentDriver();
 
@@ -146,13 +142,13 @@ public class DriverControllerTest {
         Passenger passenger = new Passenger();
         order.setPassenger(passenger);
         map.put(driver, order);
-        when(commonService.getDriverOrderMap()).thenReturn(map);
+        when(utils.getDriverOrderMap()).thenReturn(map);
 
         Model model = mock(Model.class);
         String name = driverController.closeOrder(model);
         verify(driverService, times(1)).finishTrip(order);
-        verify(commonService, times(2)).getDriverOrderMap();
-        verify(commonService, times(1)).getPassengerStringMap();
+        verify(utils, times(2)).getDriverOrderMap();
+        verify(utils, times(1)).getPassengerStringMap();
         assertEquals("driver/getPayment", name);
     }
 

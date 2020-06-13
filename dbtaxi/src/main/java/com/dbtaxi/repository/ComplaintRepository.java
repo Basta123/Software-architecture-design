@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ComplaintRepository extends JpaRepository<Complaint, Integer> {
     List<Complaint> findAllByStatusAndPassengerIdNotNull(String status);
+
     List<Complaint> findAllByStatusAndDriverIdNotNull(String status);
 }

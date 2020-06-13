@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -23,10 +23,19 @@ public class OperatorServiceTest {
     private OperatorRepository operatorRepository;
 
     @Test
+    void saveOperator() {
+        Operator operator = new Operator();
+        operatorService.save(operator);
+        verify(operatorRepository, times(1)).save(operator);
+    }
+
+    @Test
     void getOperatorByUsername() {
         Operator operator = new Operator();
         operator.setUsername("o1");
         when(operatorRepository.getOperatorByUsername("o1")).thenReturn(operator);
-        assertEquals("o1", operatorService.getOperatorByUsername("o1").getUsername());
+        assertEquals("o1", operatorService.getUserByUsername("o1").getUsername());
     }
+
+
 }

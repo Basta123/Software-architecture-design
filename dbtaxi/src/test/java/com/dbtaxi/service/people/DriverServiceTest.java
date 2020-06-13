@@ -5,12 +5,14 @@ import com.dbtaxi.model.Order;
 import com.dbtaxi.model.Payment;
 import com.dbtaxi.model.enumStatus.DriverCategory;
 import com.dbtaxi.model.enumStatus.DriverStatus;
+import com.dbtaxi.model.enumStatus.OrderStatus;
 import com.dbtaxi.model.people.Driver;
 import com.dbtaxi.model.people.Passenger;
 import com.dbtaxi.repository.BankcardRepository;
 import com.dbtaxi.repository.DriverRepository;
 import com.dbtaxi.repository.OrderRepository;
-import com.dbtaxi.service.CommonService;
+import com.dbtaxi.service.BankcardService;
+import com.dbtaxi.service.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,40 +36,16 @@ public class DriverServiceTest {
     private DriverService driverService;
 
     @MockBean
-    private BankcardRepository bankcardRepository;
-
-    @MockBean
     private OrderRepository orderRepository;
 
     @MockBean
     private DriverRepository driverRepository;
 
     @MockBean
-    private CommonService commonService;
+    private Utils utils;
 
     @MockBean
-    private PassengerService passengerService;
-
-    @Test
-    void getFare() {
-        Driver driver = new Driver();
-        Bankcard bankcard = new Bankcard();
-        bankcard.setBalance(2000);
-        driver.setBankcard(bankcard);
-
-        driverService.getFare(driver, 200);
-        verify(bankcardRepository, times(1)).save(bankcard);
-        assertEquals(2200, driver.getBankcard().getBalance());
-    }
-
-    @Test
-    void getDriverByUsername() {
-        Driver driver = new Driver();
-        driver.setUsername("d1");
-        when(driverRepository.getDriverByUsername("d1")).thenReturn(driver);
-        assertEquals("d1", driverService.getDriverByUsername("d1").getUsername());
-    }
-
+    private BankcardService bankcardService;
 
     @Test
     void startWaitTimer() {
@@ -75,8 +53,8 @@ public class DriverServiceTest {
         Order order = new Order();
         order.setDriver(driver);
         driverService.startWaitTimer(order);
-        when(commonService.getDriverStartTimeMap()).thenReturn(new HashMap<>());
-        verify(commonService, times(1)).getDriverStartTimeMap();
+        when(utils.getDriverStartTimeMap()).thenReturn(new HashMap<>());
+        verify(utils, times(1)).getDriverStartTimeMap();
     }
 
 
@@ -91,7 +69,7 @@ public class DriverServiceTest {
         Map<Driver, Long> map = new HashMap<>();
         long startTime = System.currentTimeMillis();
         map.put(driver, startTime);
-        doReturn(map).when(commonService).getDriverStartTimeMap();
+        doReturn(map).when(utils).getDriverStartTimeMap();
 
         int minutes = driverService.finishWaitTimer(order);
         assertEquals(0, minutes);
@@ -121,6 +99,19 @@ public class DriverServiceTest {
 
         driverService.finishTrip(order);
         verify(orderRepository, times(1)).save(order);
+        assertEquals(OrderStatus.DONE.toString(), order.getStatus());
+    }
+
+    @Test
+    void getFare() {
+        Driver driver = new Driver();
+        Bankcard bankcard = new Bankcard();
+        bankcard.setBalance(2000);
+        driver.setBankcard(bankcard);
+
+        int fare = 500;
+        driverService.getFare(driver, fare);
+        verify(bankcardService, times(1)).increment(bankcard, fare);
     }
 
     @Test
@@ -167,12 +158,11 @@ public class DriverServiceTest {
     void fineDriver() {
         Driver driver = new Driver();
         Bankcard bankcard = new Bankcard();
-        bankcard.setBalance(1000);
+        bankcard.setBalance(2000);
         driver.setBankcard(bankcard);
 
         driverService.fineDriver(driver);
-        verify(driverRepository, times(1)).save(driver);
-        assertEquals(500, driver.getBankcard().getBalance());
+        verify(bankcardService, times(1)).decrement(bankcard, 500);
     }
 
     @Test
@@ -189,14 +179,22 @@ public class DriverServiceTest {
     @Test
     void getDriverById() {
         Driver driver = new Driver();
-        driverService.saveDriver(driver);
+        driverService.save(driver);
         verify(driverRepository, times(1)).save(driver);
     }
 
     @Test
     void saveDriver() {
         Driver driver = new Driver();
-        driverService.saveDriver(driver);
+        driverService.save(driver);
         verify(driverRepository, times(1)).save(driver);
+    }
+
+    @Test
+    void getDriverByUsername() {
+        Driver driver = new Driver();
+        driver.setUsername("d1");
+        when(driverRepository.getDriverByUsername("d1")).thenReturn(driver);
+        assertEquals("d1", driverService.getUserByUsername("d1").getUsername());
     }
 }

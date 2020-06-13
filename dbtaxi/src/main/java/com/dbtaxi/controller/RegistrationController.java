@@ -66,7 +66,7 @@ public class RegistrationController {
             passenger.setBankcard(bankcard);
         }
 
-        passengerService.savePassenger(passenger);
+        passengerService.save(passenger);
         return "redirect:/passenger";
     }
 
@@ -113,7 +113,7 @@ public class RegistrationController {
         else
             driver.setStatus(DriverStatus.BUSY.toString());
 
-        driverService.saveDriver(driver);
+        driverService.save(driver);
         return "redirect:/driver";
     }
 

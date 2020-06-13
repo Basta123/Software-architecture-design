@@ -7,7 +7,7 @@ import com.dbtaxi.model.enumStatus.DriverStatus;
 import com.dbtaxi.model.people.Driver;
 import com.dbtaxi.model.people.Operator;
 import com.dbtaxi.model.people.Passenger;
-import com.dbtaxi.service.CommonService;
+import com.dbtaxi.service.Utils;
 import com.dbtaxi.service.ComplaintService;
 import com.dbtaxi.service.OrderService;
 import com.dbtaxi.service.people.DriverService;
@@ -34,7 +34,7 @@ import java.util.List;
 public class OperatorController {
 
     @Autowired
-    private CommonService commonService;
+    private Utils utils;
 
     @Autowired
     private OperatorService operatorService;
@@ -44,7 +44,6 @@ public class OperatorController {
 
     @Autowired
     private PassengerService passengerService;
-
 
     @Autowired
     private ComplaintService complaintService;
@@ -60,9 +59,8 @@ public class OperatorController {
 
     @GetMapping("/getRequest")
     public String getRequest(Model model) {
-        Operator operator = getCurrentOperator();
-        Order order = commonService.getOrdersPassengerOperator().poll();
-        commonService.getOperatorOrderMap().put(operator, order);
+        Order order = utils.getOrdersPassengerOperator().poll();
+        utils.getOperatorOrderMap().put(getCurrentOperator(), order);
         model.addAttribute("order", order);
         return "operator/getRequest";
     }
@@ -81,21 +79,19 @@ public class OperatorController {
 
     @PostMapping("/addUnprocessedOrder")
     public String addUnprocessedOrder(@RequestParam Integer idDriver) {
-        Operator operator = getCurrentOperator();
         Driver driver = driverService.getDriverById(idDriver);
-        commonService.getOperatorDriverMap().put(operator, driver);
-        Order order = commonService.getOperatorOrderMap().get(operator);
-        commonService.getDriverOrderMap().put(driver, order);
+        utils.getOperatorDriverMap().put(getCurrentOperator(), driver);
+        Order order = utils.getOperatorOrderMap().get(getCurrentOperator());
+        utils.getDriverOrderMap().put(driver, order);
         driver.setStatus(DriverStatus.BUSY.toString());
-        driverService.saveDriver(driver);
+        driverService.save(driver);
         return "redirect:/operator";
     }
 
     @GetMapping("/answerDriver")
     public String answerDriver(Model model) {
-        Operator operator = getCurrentOperator();
-        Driver driver = commonService.getOperatorDriverMap().get(operator);
-        Boolean answer = commonService.getDriverBooleanMap().get(driver);
+        Driver driver = utils.getOperatorDriverMap().get(getCurrentOperator());
+        Boolean answer = utils.getDriverBooleanMap().get(driver);
         model.addAttribute("answer", answer);
         model.addAttribute("driver", driver);
         return "operator/answerDriver";
@@ -103,21 +99,19 @@ public class OperatorController {
 
     @PostMapping("/createOrder")
     public String createOrder() {
-        Operator operator = getCurrentOperator();
-        Driver driver = commonService.getOperatorDriverMap().get(operator);
-        Order order = commonService.getOperatorOrderMap().get(operator);
-        order.setOperator(operator);
+        Driver driver = utils.getOperatorDriverMap().get(getCurrentOperator());
+        Order order = utils.getOperatorOrderMap().get(getCurrentOperator());
+        order.setOperator(getCurrentOperator());
         order.setDriver(driver);
         orderService.saveOrder(order);
-        commonService.getPassengerStringMap().put(order.getPassenger(), "Заказ оформлен. Ожидайте автомобиль.");
+        utils.getPassengerStringMap().put(order.getPassenger(), "Заказ оформлен. Ожидайте автомобиль.");
         return "redirect:/operator";
     }
 
     @PostMapping("/refusePassenger")
     public String refusePassenger() {
-        Operator operator = getCurrentOperator();
-        Order order = commonService.getOperatorOrderMap().get(operator);
-        commonService.getPassengerStringMap().put(order.getPassenger(), "Подходящего водителя нет. Сделайте заказ позже.");
+        Order order = utils.getOperatorOrderMap().get(getCurrentOperator());
+        utils.getPassengerStringMap().put(order.getPassenger(), "Подходящего водителя нет. Сделайте заказ позже.");
         return "redirect:/operator";
     }
 
@@ -172,7 +166,7 @@ public class OperatorController {
     public Operator getCurrentOperator() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        Operator operator = operatorService.getOperatorByUsername(currentPrincipalName);
+        Operator operator =(Operator) operatorService.getUserByUsername(currentPrincipalName);
         return operator;
     }
 }

@@ -1,14 +1,17 @@
 package com.dbtaxi.service.people;
 
+import com.dbtaxi.model.Bankcard;
 import com.dbtaxi.model.Order;
 import com.dbtaxi.model.enumStatus.DriverStatus;
 import com.dbtaxi.model.enumStatus.OrderStatus;
 import com.dbtaxi.model.people.Driver;
 import com.dbtaxi.model.people.Passenger;
+import com.dbtaxi.model.people.User;
 import com.dbtaxi.repository.BankcardRepository;
 import com.dbtaxi.repository.DriverRepository;
 import com.dbtaxi.repository.OrderRepository;
-import com.dbtaxi.service.CommonService;
+import com.dbtaxi.service.BankcardService;
+import com.dbtaxi.service.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @Getter
 @Setter
-public class DriverService {
-
-    @Autowired
-    private BankcardRepository bankcardRepository;
+public class DriverService implements UserService {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -34,33 +34,24 @@ public class DriverService {
     private DriverRepository driverRepository;
 
     @Autowired
-    private CommonService commonService;
+    private Utils utils;
 
     @Autowired
     private PassengerService passengerService;
 
-    public void getFare(Driver driver, int fare) {
-        int balance = driver.getBankcard().getBalance();
-        balance += fare;
-        driver.getBankcard().setBalance(balance);
-        bankcardRepository.save(driver.getBankcard());
-    }
-
-    public Driver getDriverByUsername(String username) {
-        Driver driver = driverRepository.getDriverByUsername(username);
-        return driver;
-    }
+    @Autowired
+    private BankcardService bankcardService;
 
     public void startWaitTimer(Order order) {
         Driver driver = order.getDriver();
         long startTime = System.currentTimeMillis();
-        commonService.getDriverStartTimeMap().put(driver, startTime);
+        utils.getDriverStartTimeMap().put(driver, startTime);
     }
 
     public int finishWaitTimer(Order order) {
         Driver driver = order.getDriver();
         long finishTime = System.currentTimeMillis();
-        long startTime = commonService.getDriverStartTimeMap().get(driver);
+        long startTime = utils.getDriverStartTimeMap().get(driver);
         int minutes = (int) ((finishTime - startTime) / 1000 / 60);
         if (minutes > 3) {
             order.getPayment().setExpiredMinutes(minutes);
@@ -91,6 +82,11 @@ public class DriverService {
         orderRepository.save(order);
     }
 
+    public void getFare(Driver driver, int fare) {
+        Bankcard bankcard = driver.getBankcard();
+        bankcardService.increment(bankcard, fare);
+    }
+
     public List<Driver> freeDriversByCategory(String category) {
         List<Driver> allDrivers = driverRepository.findAll();
         List<Driver> freeDrivers = new ArrayList<>();
@@ -110,10 +106,8 @@ public class DriverService {
     }
 
     public void fineDriver(Driver driver) {
-        int balance = driver.getBankcard().getBalance();
-        balance -= 500;
-        driver.getBankcard().setBalance(balance);
-        driverRepository.save(driver);
+        Bankcard bankcard = driver.getBankcard();
+        bankcardService.decrement(bankcard, 500);
     }
 
     public void setStatus(Driver driver, String status) {
@@ -126,8 +120,15 @@ public class DriverService {
         return driver;
     }
 
-    public void saveDriver(Driver driver) {
+    @Override
+    public void save(User user) {
+        Driver driver = (Driver) user;
         driverRepository.save(driver);
     }
 
+    @Override
+    public User getUserByUsername(String username) {
+        Driver driver = driverRepository.getDriverByUsername(username);
+        return driver;
+    }
 }

@@ -2,8 +2,8 @@ package com.dbtaxi.service.people;
 
 import com.dbtaxi.model.Bankcard;
 import com.dbtaxi.model.people.Passenger;
-import com.dbtaxi.repository.BankcardRepository;
 import com.dbtaxi.repository.PassengerRepository;
+import com.dbtaxi.service.BankcardService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,25 +25,10 @@ public class PassengerServiceTest {
     private PassengerService passengerService;
 
     @MockBean
-    private BankcardRepository bankcardRepository;
+    private BankcardService bankcardService;
 
     @MockBean
     private PassengerRepository passengerRepository;
-
-    @Test
-    void savePassenger() {
-        Passenger passenger = new Passenger();
-        passengerService.savePassenger(passenger);
-        verify(passengerRepository, times(1)).save(passenger);
-    }
-
-    @Test
-    void getPassengerByUsername() {
-        Passenger passenger = new Passenger();
-        passenger.setUsername("p1");
-        when(passengerRepository.getPassengerByUsername("p1")).thenReturn(passenger);
-        assertEquals("p1", passengerService.getPassengerByUsername("p1").getUsername());
-    }
 
     @Test
     void getPassengers() {
@@ -64,8 +49,23 @@ public class PassengerServiceTest {
         bankcard.setBalance(2000);
         passenger.setBankcard(bankcard);
 
-        passengerService.giveFare(passenger, 200);
-        verify(bankcardRepository, times(1)).save(bankcard);
-        assertEquals(1800, passenger.getBankcard().getBalance());
+        int fare=500;
+        passengerService.giveFare(passenger, fare);
+        verify(bankcardService, times(1)).decrement(bankcard,fare);
+    }
+
+    @Test
+    void savePassenger() {
+        Passenger passenger = new Passenger();
+        passengerService.save(passenger);
+        verify(passengerRepository, times(1)).save(passenger);
+    }
+
+    @Test
+    void getPassengerByUsername() {
+        Passenger passenger = new Passenger();
+        passenger.setUsername("p1");
+        when(passengerRepository.getPassengerByUsername("p1")).thenReturn(passenger);
+        assertEquals("p1", passengerService.getUserByUsername("p1").getUsername());
     }
 }

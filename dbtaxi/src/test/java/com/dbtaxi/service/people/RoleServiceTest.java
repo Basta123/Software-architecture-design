@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -28,5 +28,12 @@ public class RoleServiceTest {
         role.setName("ROLE_DRIVER");
         when(roleRepository.getByName("ROLE_DRIVER")).thenReturn(role);
         assertEquals("ROLE_DRIVER", roleService.getRoleByName("ROLE_DRIVER").getName());
+    }
+
+    @Test
+    void savePassenger() {
+        Role role = new Role();
+        roleService.save(role);
+        verify(roleRepository, times(1)).save(role);
     }
 }

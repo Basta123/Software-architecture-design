@@ -1,8 +1,11 @@
 package com.dbtaxi.service.people;
 
+import com.dbtaxi.model.Bankcard;
 import com.dbtaxi.model.people.Passenger;
+import com.dbtaxi.model.people.User;
 import com.dbtaxi.repository.BankcardRepository;
 import com.dbtaxi.repository.PassengerRepository;
+import com.dbtaxi.service.BankcardService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,7 @@ import java.util.List;
 @Service
 @Getter
 @Setter
-public class PassengerService {
+public class PassengerService implements UserService {
 
     @Autowired
     private BankcardRepository bankcardRepository;
@@ -21,14 +24,8 @@ public class PassengerService {
     @Autowired
     private PassengerRepository passengerRepository;
 
-    public void savePassenger(Passenger passenger) {
-        passengerRepository.save(passenger);
-    }
-
-    public Passenger getPassengerByUsername(String username) {
-        Passenger passenger = passengerRepository.getPassengerByUsername(username);
-        return passenger;
-    }
+    @Autowired
+    private BankcardService bankcardService;
 
     public List<Passenger> getPassengers() {
         List<Passenger> passengers = passengerRepository.findAll();
@@ -36,9 +33,19 @@ public class PassengerService {
     }
 
     public void giveFare(Passenger passenger, int fare) {
-        int balance = passenger.getBankcard().getBalance();
-        balance -= fare;
-        passenger.getBankcard().setBalance(balance);
-        bankcardRepository.save(passenger.getBankcard());
+        Bankcard bankcard = passenger.getBankcard();
+        bankcardService.decrement(bankcard, fare);
+    }
+
+    @Override
+    public void save(User user) {
+        Passenger passenger = (Passenger) user;
+        passengerRepository.save(passenger);
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        Passenger passenger = passengerRepository.getPassengerByUsername(username);
+        return passenger;
     }
 }

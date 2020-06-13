@@ -54,7 +54,7 @@ public class RegistrationControllerTest {
 
         String redirectName = registrationController.registrationPassenger(surname, name, phoneNumber, dateOfBirth, username, password, bankcardNumber);
         verify(roleService, times(1)).getRoleByName("ROLE_PASSENGER");
-        verify(passengerService, times(1)).savePassenger(any(Passenger.class));
+        verify(passengerService, times(1)).save(any(Passenger.class));
         assertEquals("redirect:/passenger", redirectName);
     }
 
@@ -78,7 +78,7 @@ public class RegistrationControllerTest {
 
         String redirectName = registrationController.registrationDriver(surname, name, phoneNumber, dateOfBirth, username, password, bankcardNumber, category, status);
         verify(roleService, times(1)).getRoleByName("ROLE_DRIVER");
-        verify(driverService, times(1)).saveDriver(any(Driver.class));
+        verify(driverService, times(1)).save(any(Driver.class));
         assertEquals("redirect:/driver", redirectName);
     }
 }

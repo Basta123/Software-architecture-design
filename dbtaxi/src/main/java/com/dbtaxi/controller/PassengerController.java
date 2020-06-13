@@ -3,9 +3,8 @@ package com.dbtaxi.controller;
 import com.dbtaxi.model.Address;
 import com.dbtaxi.model.Order;
 import com.dbtaxi.model.people.Passenger;
-import com.dbtaxi.repository.AddressRepository;
 import com.dbtaxi.service.AddressService;
-import com.dbtaxi.service.CommonService;
+import com.dbtaxi.service.Utils;
 import com.dbtaxi.service.ComplaintService;
 import com.dbtaxi.service.OrderService;
 import com.dbtaxi.service.people.PassengerService;
@@ -30,7 +29,7 @@ import java.util.List;
 public class PassengerController {
 
     @Autowired
-    private CommonService commonService;
+    private Utils utils;
 
     @Autowired
     private PassengerService passengerService;
@@ -47,18 +46,16 @@ public class PassengerController {
 
     @GetMapping("")
     public String mainPassenger() {
-        Passenger passenger = getCurrentPassenger();
-        String statusOrder = commonService.getPassengerStringMap().get(passenger);
+        String statusOrder = utils.getPassengerStringMap().get(getCurrentPassenger());
         if (statusOrder == null)
-            commonService.getPassengerStringMap().put(passenger, "Текущей заявки нет");
+            utils.getPassengerStringMap().put(getCurrentPassenger(), "Текущей заявки нет");
         return "passenger/mainPassenger";
     }
 
 
     @GetMapping("/sendData")
     public String sendData(Model model) {
-        Passenger passenger = getCurrentPassenger();
-        Order order = commonService.getPassengerOrderMap().get(passenger);
+        Order order = utils.getPassengerOrderMap().get(getCurrentPassenger());
         model.addAttribute("order", order);
         return "passenger/sendData";
     }
@@ -67,56 +64,51 @@ public class PassengerController {
     @PostMapping("/sendData")
     public String sendData(@RequestParam String microdistrictFrom, @RequestParam String streetFrom, @RequestParam String microdistrictTo, @RequestParam String streetTo, @RequestParam String category) {
         Order order = new Order();
-        Passenger passenger = getCurrentPassenger();
-        order.setPassenger(passenger);
+        order.setPassenger(getCurrentPassenger());
         order.setCategory(category);
         Address addressFrom = addressService.getAddressByMicrodistrictAndStreet(microdistrictFrom, streetFrom);
         Address addressTo = addressService.getAddressByMicrodistrictAndStreet(microdistrictTo, streetTo);
         order.setAddressFrom(addressFrom);
         order.setAddressTo(addressTo);
-        commonService.getOrdersPassengerOperator().add(order);
-        commonService.getPassengerStringMap().put(passenger, "Заявка обрабатывается. Подождите...");
-        commonService.getPassengerOrderMap().put(passenger, order);
+        utils.getOrdersPassengerOperator().add(order);
+        utils.getPassengerStringMap().put(getCurrentPassenger(), "Заявка обрабатывается. Подождите...");
+        utils.getPassengerOrderMap().put(getCurrentPassenger(), order);
         return "redirect:/passenger";
     }
 
     @GetMapping("/getConfirmedOrder")
     public String getConfirmedOrder(Model model) {
-        Passenger passenger = getCurrentPassenger();
-        String confirmedOrder = commonService.getPassengerStringMap().get(passenger);
+        String confirmedOrder = utils.getPassengerStringMap().get(getCurrentPassenger());
         model.addAttribute("confirmedOrder", confirmedOrder);
         return "passenger/getConfirmedOrder";
     }
 
     @GetMapping("/getPayment")
     public String getPayment(Model model) {
-        Passenger passenger = getCurrentPassenger();
-        Order order = commonService.getPassengerOrderMap().get(passenger);
+        Order order = utils.getPassengerOrderMap().get(getCurrentPassenger());
         model.addAttribute("order", order);
-        commonService.getPassengerOrderMap().put(order.getPassenger(), null);
+        utils.getPassengerOrderMap().put(order.getPassenger(), null);
         return "passenger/getPayment";
     }
 
     @GetMapping("/sendComplaint")
     public String sendComplaint(Model model) {
-        Passenger passenger = getCurrentPassenger();
-        List<Order> orders = orderService.getOrdersByPassenger(passenger);
+        List<Order> orders = orderService.getOrdersByPassenger(getCurrentPassenger());
         model.addAttribute("orders", orders);
         return "passenger/sendComplaint";
     }
 
     @PostMapping("/sendComplaint")
     public String sendComplaint(@RequestParam Integer idOrder, @RequestParam String cause) {
-        Passenger passenger = getCurrentPassenger();
         Order order = orderService.getOrderById(idOrder);
-        complaintService.createComplaint(passenger, order, cause);
+        complaintService.createComplaint(getCurrentPassenger(), order, cause);
         return "redirect:/passenger";
     }
 
     public Passenger getCurrentPassenger() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        Passenger passenger = passengerService.getPassengerByUsername(currentPrincipalName);
+        Passenger passenger =(Passenger) passengerService.getUserByUsername(currentPrincipalName);
         return passenger;
     }
 }
