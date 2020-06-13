@@ -83,7 +83,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         operator1.setName("Operator1Name");
         operator1.setDateOfBirth(LocalDate.of(1989,12,10));
         operator1.setPhoneNumber("8-950-123-11-11");
-        operator1.setUsername("o1");
+        operator1.setUsername("OperatorVictor");
         operator1.setPassword("$2a$10$BD63Pqo2aLW5kRP.K5kAfOfFMKjebv27kFIZ3R5JkZ.EHKGLF7wZm");
         operator1.setRoleId(roleOperator);
         operatorService.save(operator1);
@@ -94,7 +94,7 @@ public class DbtaxiApplication implements CommandLineRunner {
         operator2.setName("Operator2Name");
         operator2.setDateOfBirth(LocalDate.of(1990,5,7));
         operator2.setPhoneNumber("8-950-852-78-88");
-        operator2.setUsername("o2");
+        operator2.setUsername("OperatorDmitry");
         operator2.setPassword("$2a$10$i/J5ijwvy7sVEt6H7PHQjeyn3igs5UI5TzHeSaEWkwOj88BRlbg0q");
         operator2.setRoleId(roleOperator);
         operatorService.save(operator2);
